@@ -1,0 +1,202 @@
+<html>
+	<head>
+		<title>Ben Deverett, MUMT306 Final Project</title>
+		<style type="text/css">
+			.subheading {
+				background-color:FFFF99;
+				border:2px solid black;
+				font-family:Georgia;
+				font-style:italic;
+				padding-left:5px;
+				}
+			.content {
+				font-family:Georgia;
+				padding-top:15px;
+				padding-bottom:20px;
+				padding-left:12px;
+				}
+			.mainheading {
+				background-color:FFFF99;
+				border:4px solid black;
+				text-align:center;
+				font-family:Georgia;
+				font-weight:bold;
+				font-size:20px;
+				padding-top:10px;
+				padding-bottom:10px;
+				}
+			.navigationbar {
+				background-color:FFFF66;
+				border-bottom-style:solid;
+				border-left-style:solid;
+				border-right-style:solid;
+				border-color:black;
+				border-width:2px;
+				text-align:center;
+				font-family:Georgia;
+				margin-left:100px;
+				margin-right:100px;
+				}
+			.navblock {
+				width:14.2857%;
+				text-align:center;
+				}
+			body {background-color:#FFFFCC;}
+			a:link {
+			color: black;
+			text-decoration:none;
+			}
+			a:visited {
+			color: black;
+			text-decoration:none;
+			}
+			a:hover {
+			color: #FF9900;
+			text-decoration:none;
+			}
+			a:active {
+			color: white;
+			text-decoration:none;
+			}
+			ul{
+			margin-top:0px;
+			margin-bottom:0px;		
+			}
+			</style>
+		</style>
+	</head>
+	<body>
+		<div class="mainheading">
+			Ben Deverett, MUMT306 Final Project
+		</div>
+		<div class="navigationbar">
+			<table style="margin: 0 auto" width="100%"><tr>
+				<td class="navblock"><a href="#Summary">Summary</a></td>
+				<td class="navblock"><a href="#Hardware">Hardware</a></td>
+				<td class="navblock"><a href="#Software">Software</a></td>
+				<td class="navblock"><a href="#Algorithms">Algorithms</a></td>
+				<td class="navblock"><a href="#Overview">Overview</a></td>
+				<td class="navblock"><a href="#Progress">Progress</a></td>
+				<td class="navblock"><a href="#Source">Source</a></td>
+			</tr></table>
+		</div>
+		<br/>
+		<br/>	
+		<div class="subheading" name="Summary">  <a name="Summary"/>
+			 --Summary--
+		</div>
+		<div class="content">
+			The goal of this project is to create simple <b><a href="http://python.org/">Python</a></b>-based HCI (specifically BCI) musical instrument by integrating the input from an external <b><a href="http://en.wikipedia.org/wiki/Electroencephalography">EEG</a></b> sensor with a <b><a href="http://www.midi.org/index.php">MIDI</a></b>-based music-making algorithm. The EEG sensor, a single electrode placed on the forehead, records fluctuations of electric fields through the skull caused by large-scale changes in brain activity. This data is transmitted to the computer wirelessly as a time series of recordings, and this signal is then decomposed into frequency bands. An algorithm will be employed to determine which, if any, activities will produce consistent and unique signals (for example: blinking/thinking/focussing). Once calibrated, the user will play the device by reproducing these activities, giving rise to signals which will trigger MIDI notes played through the virtual synthesizer.
+		</div>
+		<div class="subheading" name="Hardware">  <a name="Hardware"/>
+			 --Hardware--
+		</div>
+		<div class="content">
+			<ul>
+				<li>
+					The EEG sensor used is the <b><a href = "http://store.neurosky.com/products/mindwave-1">Neurosky Mindwave</a></b>, a single-electrode EEG sensor with wireless data transmission.
+				</li>
+			</ul>
+		</div>
+		<div class="subheading" name="Software">  <a name="Software"/>
+			 --Software--
+		</div>
+		<div class="content">
+			<ul>
+				<li>
+					<b><a href="http://developer.neurosky.com/docs/doku.php?id=thinkgear_connector_tgc">ThinkGear Connector: </a></b>the application used to direct sensor data from the serial port to an open socket
+				</li>
+				<li>
+					<b><a href="http://docs.python.org/library/socket.html">Python 'socket' module: </a></b>the Python module used to retrieve sensor data from the open socket
+				</li>
+				<li>
+					<b><a href="http://trac.assembla.com/pkaudio/wiki/pyrtmidi">pyrtmidi: </a></b>a Python wrapper for the <b><a href="http://www.music.mcgill.ca/~gary/rtmidi/">rtmidi</a></b> API, used to send MIDI messages from a Python script
+				</li>
+				<li>
+					<b><a href="http://notahat.com/simplesynth">SimpleSynth: </a></b>virtual synthesizer application with built-in MIDI instruments
+				</li>
+			</ul>
+		</div>
+		<div class="subheading" name="Algorithms"> <a name="Algorithms"/>
+			 --Algorithms--
+		</div>
+		<div class="content">
+			<i>(This section lists some of the most important methods of the project.)</i>
+			<br/>
+			<br/>
+			<ul>
+				<li>
+					<i>Parsing sensor data: </i> Client.recvJson()
+				</li>
+				<li>
+					<i>Calibrating/training: </i> Project.train()
+				</li>
+				<li>
+					<i>Detecting messages: </i> Data.gotSignal()
+				</li>
+				<li>
+					<i>Making music: </i> Project.keepMusicalLoop()
+				</li>
+			</ul>
+		</div>
+		<div class="subheading" name="Overview">  <a name="Overview"/>
+			 --Overview--
+		</div>
+		<div class="content">
+			The project is defined as a class called <i>Project</i> in the module <i>project.py</i>, so that it can be imported and used as an object in a python script. A project object is initialized with one parameter called play_mode. Available play_mode values are 0 and 1, where 0 corresponds to "freestyle mode" and 1 to "record mode". When instantiated, the Project object creates a <i>Client</i> object through which it will interact with the sensor. The initialization of this Client object is automatic, establishing a connection to the socket and configuring the device for JSON-formatted raw-output. The Client object also creates a <i>Data</i> object, used to store and analyze all sensor data during the session. Next, the Project object prompts the user to enter 10 seconds of training, during which the user is meant to sit still with minimal blinking. The data collected is stored in the client's Data object, and baseline data parameters are calculated and stored. After creating its client, the Project object creates a midiout object to be used for all outbound MIDI messages. At this point, the Project object remains dormant until the go() method is called, at which point the musical loop begins. Based on preset parameter values specified in the project.py module, a musical loop begins to play, trackable by a constant metronome. The tempo of the loop can be changed by modifying the parameters in the beginning lines of project.py. The loop consists of one bar, which for simplicity, corresponds to a single whole note at the specified tempo. In freestyle mode, the loop proceeds to indefinitely check sensor input while maintaining the musical loop. If a message is detected, as determined by the gotSignal() method in the Data object, a MIDI message is sent through the midiout object. The files are written such that they support the detection and interpretation of multiple sensor-message types, allowing for the possibility of sending different MIDI notes based on the type of message. Record mode consists of a more complex loop which alternates between "record" bars, during which the user can send new messages, and "break" bars, during which the user can listen but not send messages. The record bars are indicated by a constant MIDI tone playing in the background. The duration of a 'record bar' is similar to freestyle mode in that notes will be played when messages are received, however, every note is then adjusted for timing and stored. [The object's resolution parameter determines the frequency with which the notes of the loop can be analyzed for recording and playback. For example, a resolution of 16 allows 16 separately timed notes (each being a 16th note) to be played over one bar. When notes are adjusted, they are matched to the nearest note of the specified resolution.] The 'record bars' cycle through a series of MIDI drum notes (which can be easily added to or modified) in order to allow the creation of multi-drum beats. Every subsequent bar plays all timing-fixed notes at their proper time. The duration of break bars allows the user to hear what they have recorded without the ability to modify it. The loop continues until stopped manually.
+		</div>
+		<div class="subheading" name="Progress"> <a name="Progress"/>
+			 --Progress--
+		</div>
+		<div class="content">
+				<ul>
+					<li>
+						<i>Interfacing with the sensor: </i>acquiring data from the sensor was achieved quite simply through the USB dongle provided by Neurosky along with the sensor. <b><a href="http://developer.neurosky.com/docs/doku.php?id=thinkgear_connector_tgc">ThinkGear Connector,</a></b> an OSX application that runs in the background and direct sensor data to a socket (handling all server side operations), is offered as a free download from the company as well. After downloading this application, data was presumably being directed to a socket.
+					</li>
+					<li>
+						<i>Communicating with the socket: </i>communication was achieved using the <b><a href="http://docs.python.org/library/socket.html">socket</a></b> module in python. The Client class was defined to set up the socket connection and configure the relevant settings for data transmission.
+					</li>
+					<li>
+						<i>Parsing the sensor data: </i>the time series data from the sensor is sent using a protocol analogous to that of MIDI in which binary messages with predefined meanings are sent in sequence. The complete binary socket protocol can be found <a href="306/binary_socket_protocol.pdf"><b>here.</b></a> This parsing algorithm was added to the Client class.
+					</li>
+					<li>
+						<i>Parsing the sensor data II: </i>since the Mindwave is a new product, their API protocols are constantly changing, and after writing the algorithm to parse binary data, the standard was changed to <b><a href="http://www.json.org/">JSON</a></b> protocol. So, another set of methods were added to the Client class, handling JSON input. Some of the new protocol details can be found <b><a href="306/socket_protocol.pdf">here</a></b>.
+					</li>
+					<li>
+						<i>Storing/analyzing the data: </i>the Data class was written to store all data parsed by the Client, and it will eventually perform relevant data analysis for message detection.
+					</li>
+					<li>
+						<i>Detecting messages: </i> an ideal version of this project would involve an implementation of a time-series machine-learning algorithm (such as a <b><a href="http://en.wikipedia.org/wiki/Hidden_Markov_model">hidden markov model</a></b>) to analyze training data and learn to detect messages triggered by user-initiated fluctuations in thought/attention. Since this is a relatively difficult task given the limitations of time and equipment, it is unknown whether or not this stage will be reached in this project. Despite this, certain reliable information from the sensor can be interpreted, such as blink information, so this will be used as a message trigger at the very least. More to come.
+					</li>
+					<li>
+						<i>Building the musical foundation: </i>The Project class was designed to incorporate a Client and its Data with the musical foundation of the project. The musical algorithm involves a metronome keeping tempo, allowing the player insert notes, currently in a 'freestyle' manner, by controlling the sensor.
+					</li>
+					<li>
+						<i>Attempting multiprocessing: </i>it was hoped that the analysis of sensor data could be performed simultaneously with the musical loop using multiprocessing (forked processes). However, rtmidi was unable to function when inside a multiprocess instance (for unknown, probably CoreAudio-related reasons), so this method could not be used. 
+					</li>
+					<li>
+						<i>Keeping time and detection going: </i>since multiprocessing could not be used, the control of alternation of sensor analysis and metronome had to be programmed manually. This was achieved by decreasing the temporal resolution of the music algorithm to deciseconds, which was necessary because the data analysis steps take on the order of centiseconds for single-analysis operations. Thus, every iteration of the loop performs an analysis of the sensor data without missing a beat.
+					</li>
+					<li>
+						<i>Detecting messages II: </i>it was discovered that upon analyzing raw EEG values, some information could be extracted by a relatively simple process. For example, from plotting the EEG values over time, it clear that blinks cause sharp peaks in the EEG value, and intense focussing can cause visually detectable bumps as well. In light of this, a training method was written during which the baseline raw EEG activity of the user is recorded and stored, and all subsequent data is to be compared to that for message detection. Through trial and error, it is now a matter of determining how much information can be extracted by maximizing the information attained from analysis of standard deviation from baseline EEG value. This involves partitioning the EEG readings into windows the size of which still needs to be made most efficient.
+					</li>
+					<li>
+					<i>Detecting messages III: </i>it seems that many messages show pronounced trends when plotted on an EEG signal vs time plot, however these trends are difficult to extract using simple signal processing methods, especially in the context of this program, where multiple message types should theoretically be considered simultaneously. Nonetheless, experimentation continues with message detection, and it is now confirmed that blink can be reliably detected.
+					</li>
+					<li>
+					<i>Play modes: </i>freestyle mode was completed by this point, but since the signals were somewhat unreliable in their exact timing, and since it became difficult to constantly sit without producing more messages, it was clear that another play mode was required. Record mode was designed to alternate between 'listening' bars and 'record' bars, such that the user can record, then listen without worrying about adding more messages. Furthermore, their recorded notes are timed to the rhythm. This was a vast improvement to the potential for beat-making.
+					</li>
+					<li>
+					<i>Adding notes: </i>since it was decided that multiple message types are too complex for the hardware/software setup, another way of incorporating multiple MIDI notes was necessary. Thus, an algorithm was implemented to offer various notes (at this stage, kick, hat, and snare) to be played. The 'record' bars alternate between the message types so that a beat can be constructed using all of them. 
+					</li>
+				</ul>
+		</div>
+		<div class="subheading" name="Source"> <a name="Source"/>
+			 --Source--
+		</div>
+		<div class="content">
+			The source code for this project can be found <b><a href="https://github.com/bensondaled/mumt306final">here.</a></b><br/>
+			The a.py script runs an instance of the project.
+		</div>
+	</body>
+<html>
